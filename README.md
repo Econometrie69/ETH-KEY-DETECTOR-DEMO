@@ -8,7 +8,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 2. Create virtual environment and install dependencies:
 ```bash
 uv venv
-source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
+source .venv/bin/activate
 uv pip install pre-commit
 ```
 
@@ -17,7 +17,12 @@ uv pip install pre-commit
 pre-commit install
 ```
 
-4. Run pre-commit on all files:
+4. Make executeable
+```bash
+chmod +x .git-hooks/ethereum-key-detector
+```
+   
+5. Run pre-commit on all files:
 ```bash
 pre-commit run --all-files
 ```
