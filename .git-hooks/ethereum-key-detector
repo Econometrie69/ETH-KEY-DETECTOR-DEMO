@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+import re
+import sys
+from typing import Sequence
+import argparse
+
+def check_eth_private_key(line: str) -> bool:
+    """Check for Ethereum private keys (64 hex chars, with or without 0x prefix)."""
+    patterns = [
+        # Raw private key (64 hex chars)
+        re.compile(r'[0-9a-fA-F]{64}'),
+        # Private key with 0x prefix
+        re.compile(r'0x[0-9a-fA-F]{64}')
+    ]
+
+    return any(pattern.search(line) for pattern in patterns)
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filenames', nargs='*', help='Filenames to check')
+    args = parser.parse_args(argv)
+
+    secrets_found = []
+
+    check_types = {
+        'Private Key': check_eth_private_key,
+    }
+
+    for filename in args.filenames:
+        with open(filename, 'r', encoding='utf-8') as content:
+            for i, line in enumerate(content, start=1):
+                for secret_type, check_func in check_types.items():
+                    if check_func(line):
+                        secrets_found.append(
+                            f'{filename}:{i}: Potential Ethereum {secret_type} detected'
+                        )
+
+    if secrets_found:
+        print('Ethereum secrets detected:')
+        for finding in secrets_found:
+            print(finding)
+        return 1
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
