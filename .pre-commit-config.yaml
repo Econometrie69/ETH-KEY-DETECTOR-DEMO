@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ethereum-key-detector
+        name: ethereum-key-detector
+        description: Detect Ethereum private keys
+        entry: .git-hooks/ethereum-key-detector
+        language: python
+        types: [text]
+        exclude: ^uv\.lock$
